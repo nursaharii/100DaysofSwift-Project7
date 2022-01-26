@@ -15,7 +15,7 @@ class ViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        title = lowerSearch.isEmpty ? "White House petitions" : "\(lowerSearch) in White House petitions" 
+        title = "White House petitions"
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Credits", style: .plain,target: self,action: #selector(info))
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(search))
@@ -60,6 +60,7 @@ class ViewController: UITableViewController {
     }
     
     func parse(json: Data) {
+        
         let decoder = JSONDecoder()
         
         if let jsonPetitions = try? decoder.decode(Petitions.self, from: json) {
@@ -80,16 +81,25 @@ class ViewController: UITableViewController {
         present(ac, animated: true)
     }
     @objc func search() {
-        let ac = UIAlertController(title: "Serach", message: nil, preferredStyle: .alert)
-                ac.addTextField()
+        let ac = UIAlertController(title: "Search", message: nil, preferredStyle: .alert)
+        ac.addTextField()
                 let submitAction = UIAlertAction (title: "Submit", style: .default) { [weak self, weak ac] action in
                     guard let search = ac?.textFields?[0].text else { return }
                     self?.lowerSearch = search.lowercased()
                     self?.submit()
+                    self?.title = search + " in White House Petitions"
                     self?.tableView.reloadData()
                 }
-                ac.addAction(submitAction)
-                present(ac,animated: true)
+        let cancelAction = UIAlertAction (title: "Cancel", style: .default) { _ in
+            self.lowerSearch = ""
+            self.submit()
+            self.title = "White House Petitions"
+            self.tableView.reloadData()
+        }
+        
+        ac.addAction(submitAction)
+        ac.addAction(cancelAction)
+        present(ac,animated: true)
     }
     func submit() {
         if lowerSearch.isEmpty {
