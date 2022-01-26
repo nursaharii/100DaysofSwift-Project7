@@ -10,12 +10,18 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-
+    //Eskiden window işlemleri appdelegate içerisinde yapılıyordu fakat artık SceneDelegate içerisine taşındı. İşlemlerimize burada devam ediyoruz.
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
+        if let tabBarController = window?.rootViewController as? UITabBarController {
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            let vc = storyboard.instantiateViewController(withIdentifier: "navController")
+            vc.tabBarItem = UITabBarItem(tabBarSystemItem: .topRated, tag: 1)
+            tabBarController.viewControllers?.append(vc)
+        }
         guard let _ = (scene as? UIWindowScene) else { return }
     }
 
